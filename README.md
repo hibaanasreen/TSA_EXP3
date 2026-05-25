@@ -1,5 +1,5 @@
 # Ex.No: 03   COMPUTE THE AUTO FUNCTION(ACF)
-Date: 
+Date: 25/05/26
 
 ### AIM:
 To Compute the AutoCorrelation Function (ACF) of the data for the first 35 lags to determine the model
@@ -25,19 +25,86 @@ data = [3, 16, 156, 47, 246, 176, 233, 140, 130,
 lags = range(35)
 
 
-#Pre-allocate autocorrelation table
+```python
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 
-#Mean
+# Load the dataset
+file_path = "student_performance.csv"
 
-#Variance
+# Read CSV file
+df = pd.read_csv(file_path)
 
-#Normalized data
+# Display dataset columns
+print("Columns in Dataset:")
+print(df.columns)
 
-#Go through lag components one-by-one
+# Select numeric columns only
+numeric_columns = df.select_dtypes(include=[np.number])
 
-#display the graph
+# Check if dataset has numeric columns
+if numeric_columns.shape[1] == 0:
+    print("No numeric columns found.")
+else:
+    # Select first numeric column
+    column_name = numeric_columns.columns[0]
+    
+    # Remove missing values
+    data = numeric_columns[column_name].dropna().values
+
+    print("\nSelected Column:", column_name)
+
+    # Data length
+    N = len(data)
+
+    # Maximum lag
+    max_lag = min(35, N - 1)
+
+    # Mean and variance
+    mean_data = np.mean(data)
+    variance_data = np.var(data)
+
+    # Store autocorrelation values
+    autocorr_values = []
+
+    # Calculate autocorrelation
+    for lag in range(max_lag + 1):
+
+        if lag == 0:
+            autocorr_values.append(1)
+
+        else:
+            numerator = np.sum(
+                (data[:-lag] - mean_data) *
+                (data[lag:] - mean_data)
+            ) / N
+
+            autocorrelation = numerator / variance_data
+
+            autocorr_values.append(autocorrelation)
+
+    # Plot graph
+    plt.figure(figsize=(10, 6))
+
+    plt.stem(range(max_lag + 1), autocorr_values)
+
+    plt.title(f'Autocorrelation Plot of {column_name}')
+
+    plt.xlabel('Lag')
+
+    plt.ylabel('Autocorrelation')
+
+    plt.grid(True)
+
+    plt.show()
+
+```
+    
+    
 
 ### OUTPUT:
+<img width="754" height="644" alt="image" src="https://github.com/user-attachments/assets/99e8387f-f46a-42d5-9519-3449e292a4c4" />
 
 ### RESULT:
         Thus we have successfully implemented the auto correlation function in python.
